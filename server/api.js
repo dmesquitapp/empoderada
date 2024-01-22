@@ -32,7 +32,8 @@ app.use(function (req, res, next) {
     next();
 });
 consign({cwd: 'server'})
-    .include('routes')
+    .include('database')
+    .then('routes')
     .into(app);
 
 
