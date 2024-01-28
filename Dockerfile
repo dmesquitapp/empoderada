@@ -6,3 +6,4 @@ COPY ./script/ /docker-entrypoint-initdb.d/
 ENV MYSQL_ROOT_PASSWORD "modafeminina"
 ENV MYSQL_DATABASE "Empoderada"
 ENV TZ "America/Sao_Paulo"
+EXPOSE 3306
