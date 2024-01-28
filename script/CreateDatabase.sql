@@ -1,6 +1,6 @@
 USE Empoderada;
 
-CREATE TABLE Users (
+CREATE TABLE IF NOT EXISTS Users (
     email varchar(200) not null primary key,
     is_active boolean not null default true,
     created_date datetime not null default current_timestamp,
@@ -8,7 +8,7 @@ CREATE TABLE Users (
     password varchar(200) not null
 );
 
-CREATE TABLE Address (
+CREATE TABLE IF NOT EXISTS Address (
     id int(10) auto_increment primary key,
     zipcode char(10),
     address_number varchar(50),
@@ -17,17 +17,18 @@ CREATE TABLE Address (
     FOREIGN KEY (user) REFERENCES Users(email) ON DELETE CASCADE
 );
 
-CREATE TABLE Orders (
+CREATE TABLE IF NOT EXISTS Orders (
     id int(10) primary key,
     user varchar(200) not null,
     order_date datetime not null,
     status varchar(50) not null,  -- pending, approved, shipped, delivered
     shipment_date datetime,       -- when the product was sent to customer
     delivery_date datetime,        -- when the product was delivered to customer
-    payment_method varchar(100) not null --  credit card, cash on hand, pix, etc.
+    payment_method varchar(100) not null, --  credit card, cash on hand, pix, etc.
+    FOREIGN KEY (user) REFERENCES Users(email)
 );
 
-CREATE TABLE  OrderItems (
+CREATE TABLE IF NOT EXISTS OrderItems (
     item_id serial PRIMARY KEY,
     order_id int NOT NULL,
     product_name varchar(255) NOT NULL,
@@ -36,8 +37,9 @@ CREATE TABLE  OrderItems (
     FOREIGN KEY (order_id) REFERENCES Orders(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Products (
-    sku varchar(36) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Products (
+    id int AUTO_INCREMENT PRIMARY KEY,
+    sku varchar(36) UNIQUE KEY,
     image_url text,
     name varchar(255) NOT NULL,
     description text,
