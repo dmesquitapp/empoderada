@@ -1,10 +1,72 @@
-module.exports = function (app) {
+const session = require('express-session')
+const User = require("../models/user.model");
+module.exports = async function (app) {
+    const user_ctrl = app.controllers.user;
+    const address_ctrl = app.controllers.address;
+    const middleware = app.security.middleware
+    const prefix = "/api"
+    const escapeHtml = require('escape-html')
+    const User = require('../models/user.model')
 
-    const Product = require('../models/product.model')
-    let prd = new Product().fromJSON({name: 'tiago', surname: 'matana'})
-    prd.generate_sku();
-    console.log(prd.toJSON())
-    app.get('/', function index(req, res) {
-        res.send("Hello World");
-    });
+
+    app.use(session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true
+    }))
+
+    app.use((err, req, res, next) => {
+        console.error(err.stack)
+        res.status(500).send('Something broke!')
+    })
+
+    // Users routes
+    app.route(`${prefix}/users`)
+        .post(async function(req, res) {
+            await user_ctrl.create(req, res)
+        })
+        .put(middleware.isAuthenticated, async function(req, res){
+            const response = await user_ctrl.update(req.body)
+            res.status(response.status).json(response.message)
+        })
+        .get(middleware.isAuthenticated, async function(req, res) {
+            const response = await user_ctrl.list()
+            res.status(response.status).json(response.message)
+        });
+    app.route(`${prefix}/users/:email`)
+        .delete(middleware.isAuthenticated, async function(req, res) {
+            const response = await user_ctrl.remove(req.params.email)
+            res.status(response.status).json(response.message)
+        })
+        .get(middleware.isAuthenticated, async function(req, res) {
+            const response = await user_ctrl.get(req.params.email)
+            res.status(response.status).json(response.message)
+        });
+
+    // Access route
+    app.route(`${prefix}/login`)
+        .post(async function(req, res){
+            await user_ctrl.login(req, res);
+        })
+        .get(async function(req, res){
+            let user = await middleware.get_user(req);
+            return res.json({user})
+        })
+
+    // Addresses routes
+    app.route(`${prefix}/address`)
+        .post(middleware.isAuthenticated, async function(req, res){
+            await address_ctrl.create(req, res)
+        })
+        .get(middleware.isAuthenticated, async function(req, res){
+            await address_ctrl.list(req, res)
+        });
+    app.route(`${prefix}/address/:id`)
+        .put(middleware.isAuthenticated, async function(req, res){
+            await address_ctrl.update(req, res)
+        })
+        .delete(middleware.isAuthenticated,async function(req, res){
+            await address_ctrl.remove(req, res)
+         });
+
 }

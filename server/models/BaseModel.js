@@ -5,14 +5,15 @@ class BaseModel
     }
 
     fromJSON(options) {
-        const keys = Object.keys(options)
-        if (keys.length) {
-            keys.forEach(k => {
-                if(k in this) this[k] = options[k]
-            })
-        }
-        return this;
+        let obj = Object.assign(this, options)
+        Object.keys(obj).forEach(key => {
+            if (obj[key] === undefined) {
+                delete obj[key];
+            }
+        });
+        return obj;
     }
+
 
 
     toJSON() {
@@ -20,7 +21,8 @@ class BaseModel
         for (let key of Object.keys(this)) {
             data[key] = this[key]
         }
-        return JSON.parse(JSON.stringify(data));
+        // return JSON.parse(JSON.stringify(data));
+        return Object.assign(this, data);
 
         
     }

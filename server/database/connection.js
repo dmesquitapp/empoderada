@@ -1,8 +1,7 @@
 const mysql = require('mysql2')
 
 /** @namespace application.app.database.connection**/
-module.exports.open = function (ctrl){
-
+module.exports.open = function (table){
     try {
         const db = mysql.createConnection({
             host: 'localhost',
@@ -13,10 +12,11 @@ module.exports.open = function (ctrl){
         });
         db.connect((err) => {
             if (err) throw err;
-            console.log(`Conexão com o banco de dados estabelecido.`);
+            console.log(`${table} conectado com o banco de dados.`);
         });
         return db;
     } catch (e) {
         console.error(e);
     }
+
 }

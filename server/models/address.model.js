@@ -2,17 +2,15 @@ const BaseModel = require('./BaseModel')
 class Address extends BaseModel
 {
     id;
-    zip_code;
+    zipcode;
     address_number;
     complement;
+    user;
 
     constructor(){
         super();
-        this.id = null
-        this.zip_code = null
-        this.address_number = null
-        this.complement = null
     }
+
 
 
 }

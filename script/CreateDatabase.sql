@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS Orders (
     shipment_date datetime,       -- when the product was sent to customer
     delivery_date datetime,        -- when the product was delivered to customer
     payment_method varchar(100) not null, --  credit card, cash on hand, pix, etc.
+    address varchar(200),
     FOREIGN KEY (user) REFERENCES Users(email)
 );
 

@@ -6,15 +6,9 @@ class User extends BaseModel
     password;
     is_active;
     name;
-    address;
 
     constructor(){
         super();
-        this.is_active = true
-        this.email = null
-        this.password = null
-        this.name = null
-        this.address = new Address()
     }
 
 
