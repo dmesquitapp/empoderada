@@ -6,6 +6,7 @@ class User extends BaseModel
     password;
     is_active;
     name;
+    level = "customer";
 
     constructor(){
         super();

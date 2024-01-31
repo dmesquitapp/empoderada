@@ -77,7 +77,8 @@ module.exports = function(app) {
                 if (results.length) {
                     let valid = bcrypt.compareSync(user.password, results[0].password);
                     if (valid) {
-                        let token = await middleware.generate_token(user)
+                        let authenticatedUser = new User().fromJSON(results[0])
+                        let token = await middleware.generate_token(authenticatedUser)
                         return res.status(202).json({token: token})
                     } else {
                         return res.status(403).send("Não autorizado");

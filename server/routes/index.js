@@ -1,9 +1,10 @@
 const session = require('express-session')
 const User = require("../models/user.model");
 module.exports = async function (app) {
+    const middleware = app.security.middleware
     const user_ctrl = app.controllers.user;
     const address_ctrl = app.controllers.address;
-    const middleware = app.security.middleware
+    const product_ctrl = app.controllers.product;
     const prefix = "/api"
     const escapeHtml = require('escape-html')
     const User = require('../models/user.model')
@@ -69,4 +70,21 @@ module.exports = async function (app) {
             await address_ctrl.remove(req, res)
          });
 
+
+    // Products routes
+    app.route(`${prefix}/products`)
+        .post(middleware.isAuthenticated, async function(req, res){
+            await product_ctrl.create(req, res)
+        });
+    app.route(`${prefix}/products/:page/:size`)
+        .get(middleware.isAuthenticated, async function(req, res){
+            await product_ctrl.list(req, res)
+        });
+    app.route(`${prefix}/products/:id`)
+        .put(middleware.isAuthenticated, async function(req, res){
+            await product_ctrl.update(req, res)
+        })
+        .delete(middleware.isAuthenticated,async function(req, res){
+            await product_ctrl.remove(req, res)
+        });
 }

@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS Users (
     is_active boolean not null default true,
     created_date datetime not null default current_timestamp,
     name varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci not null,
-    password varchar(200) not null
+    password varchar(200) not null,
+    level varchar(50) not null default "customer" -- customer or admin
 );
 
 CREATE TABLE IF NOT EXISTS Address (

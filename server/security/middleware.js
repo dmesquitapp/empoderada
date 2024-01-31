@@ -15,6 +15,7 @@ module.exports = function (app) {
                 if (!token) await res.status(403).json({msg: "Não autorizado"});
                 let user = await jwt.verify(token, secret);
                 req.session.user = user._id
+                req.session.level = user.level
                 next()
 
             } catch (e) {
@@ -25,14 +26,15 @@ module.exports = function (app) {
             try {
                 const token = req.headers['authorization'];
                 const user = await jwt.verify(token, secret);
-                return user._id;
+                return user;
             } catch (e) {
                 return null;
             }
         },
         generate_token: async function(user){
             let _id = user.email;
-            return jwt.sign({_id}, secret, {
+            let level = user.level;
+            return jwt.sign({_id,level}, secret, {
                 expiresIn: 43200 // expires in 12 hours
             });
         }
