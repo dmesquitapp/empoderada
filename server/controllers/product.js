@@ -8,15 +8,14 @@ module.exports = function(app) {
     return {
         create: async function(req, res) {
             if (req.session.level !== "admin") return res.status(503).send("Operation not permitted")
-            let product = new Product().fromJSON(req.body)
+            let product = new Product(req.body)
             db.query(`INSERT INTO ${schema} SET ?`, product, async function (err) {
                 if (err) res.status(409).json({message: err.sqlMessage})
                 await res.status(201).send(true)
             });
         },
         update: async function(req, res) {
-            if (req.session.level !== "admin") return res.status(503).send("Operation not permitted")
-            let product = new Product().fromJSON(req.body)
+            let product = Product.fromJSON(req.body)
             db.query(`UPDATE ${schema} SET ? WHERE id = ?`, [product, Number(req.params.id)], async function (err) {
                 if (err) {
                     await res.status(409).json({message: err.sqlMessage})
@@ -32,7 +31,7 @@ module.exports = function(app) {
                 if (err) await res.status(409).json({message: err.sqlMessage})
 
                 let response = result.map(r => {
-                    return new Product().fromJSON(r)
+                    return Product.fromJSON(r)
                 })
                 await res.status(202).json(response)
             });
@@ -43,7 +42,7 @@ module.exports = function(app) {
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
                     if (result.length) {
-                        await res.status(202).json(new Product().fromJSON(result[0]))
+                        await res.status(202).json(Product.fromJSON(result[0]))
                     } else {
                         await res.status(404).json({})
                     }
@@ -51,7 +50,6 @@ module.exports = function(app) {
             });
         },
         remove: async function(req, res) {
-            if (req.session.level !== "admin") return res.status(503).send("Operation not permitted")
             db.query(`DELETE FROM ${schema} WHERE id = ?`, Number(req.params.id), async function (err) {
                 if (err){
                     await res.status(409).json({message: err.sqlMessage})

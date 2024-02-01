@@ -5,6 +5,7 @@ module.exports = async function (app) {
     const user_ctrl = app.controllers.user;
     const address_ctrl = app.controllers.address;
     const product_ctrl = app.controllers.product;
+    const order_ctrl = app.controllers.order;
     const prefix = "/api"
     const escapeHtml = require('escape-html')
     const User = require('../models/user.model')
@@ -73,7 +74,7 @@ module.exports = async function (app) {
 
     // Products routes
     app.route(`${prefix}/products`)
-        .post(middleware.isAuthenticated, async function(req, res){
+        .post(middleware.isAuthenticated, middleware.isAdmin, async function(req, res){
             await product_ctrl.create(req, res)
         });
     app.route(`${prefix}/products/:page/:size`)
@@ -81,10 +82,20 @@ module.exports = async function (app) {
             await product_ctrl.list(req, res)
         });
     app.route(`${prefix}/products/:id`)
-        .put(middleware.isAuthenticated, async function(req, res){
+        .put(middleware.isAuthenticated, middleware.isAdmin, async function(req, res){
             await product_ctrl.update(req, res)
         })
-        .delete(middleware.isAuthenticated,async function(req, res){
+        .delete(middleware.isAuthenticated, middleware.isAdmin, async function(req, res){
             await product_ctrl.remove(req, res)
         });
+
+//     Orders routes
+    app.route(`${prefix}/order`)
+        .post(middleware.isAuthenticated, async function(req, res){
+            await order_ctrl.create(req, res);
+        })
+        .get(middleware.isAuthenticated, async function(req, res){
+            await order_ctrl.list(req, res)
+        })
+
 }

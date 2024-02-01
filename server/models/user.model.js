@@ -8,8 +8,14 @@ class User extends BaseModel
     name;
     level = "customer";
 
-    constructor(){
+    constructor(obj){
         super();
+        Object.keys(obj).forEach(key => {
+            if (Object.keys(this).indexOf(key) < 0) {
+                delete obj[key]
+            }
+        })
+        Object.assign(this, obj)
     }
 
 

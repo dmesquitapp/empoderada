@@ -11,13 +11,12 @@ class Product extends BaseModel
 
     constructor(){
         super();
-        this.id = null;
-        this.sku = null;
-        this.image_url = null;
-        this.name = null;
-        this.description = null;
-        this.stock = null;
-        this.price = null;
+        Object.keys(obj).forEach(key => {
+            if (Object.keys(this).indexOf(key) < 0) {
+                delete obj[key]
+            }
+        })
+        Object.assign(this, obj)
     }
 
     generate_sku(){

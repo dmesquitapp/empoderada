@@ -4,14 +4,9 @@ class BaseModel
     constructor(){
     }
 
-    fromJSON(options) {
-        let obj = Object.assign(this, options)
-        Object.keys(obj).forEach(key => {
-            if (obj[key] === undefined) {
-                delete obj[key];
-            }
-        });
-        return obj;
+    static fromJSON(jsonString) {
+        const jsonObj = JSON.parse(jsonString instanceof String ? jsonString : JSON.stringify(jsonString));
+        return new this(jsonObj);
     }
 
 
@@ -19,7 +14,7 @@ class BaseModel
     toJSON() {
         let data = {}
         for (let key of Object.keys(this)) {
-            data[key] = this[key]
+            if (Object.keys(this).indexOf(key) > -1) data[key] = this[key]
         }
         // return JSON.parse(JSON.stringify(data));
         return Object.assign(this, data);

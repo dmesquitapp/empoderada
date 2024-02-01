@@ -14,7 +14,7 @@ module.exports = function(app) {
 
     return {
         create: async function(req, res) {
-            const user = new User().fromJSON(req.body);
+            const user = new User(req.body);
             let sql = `INSERT INTO ${schema}
                        (email, name, password) VALUES (?,?,?)`;
             user.password = bcrypt.hashSync(user.password, salt);
@@ -25,7 +25,7 @@ module.exports = function(app) {
 
         },
         update: async function(req) {
-            const user = new User().fromJSON(req.body);
+            const user = new User(req.body);
             let sql = `UPDATE ${schema}
                        SET ? WHERE email = ?`;
             db.query(sql, [user, req.session.user], async function (err) {
@@ -39,7 +39,7 @@ module.exports = function(app) {
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
                     let response = result.map(r => {
-                        return new new User().fromJSON(r)
+                        return new new User(r)
                     });
                     await res.status(200).json(response)
                 }
@@ -51,7 +51,7 @@ module.exports = function(app) {
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
                     if (result.length){
-                        await res.status(200).json(new User().fromJSON(result[0]))
+                        await res.status(200).json(new User(result[0]))
                     } else {
                         await res.status(404).json({})
                     }
@@ -68,7 +68,7 @@ module.exports = function(app) {
             });
         },
         login: async function(req, res) {
-            const user = new User().fromJSON(req.body);
+            const user = new User(req.body);
             let sql = `SELECT *
                        FROM ${schema}
                        WHERE email = ?;`;
@@ -77,7 +77,7 @@ module.exports = function(app) {
                 if (results.length) {
                     let valid = bcrypt.compareSync(user.password, results[0].password);
                     if (valid) {
-                        let authenticatedUser = new User().fromJSON(results[0])
+                        let authenticatedUser = new User(results[0])
                         let token = await middleware.generate_token(authenticatedUser)
                         return res.status(202).json({token: token})
                     } else {

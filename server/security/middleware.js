@@ -19,7 +19,16 @@ module.exports = function (app) {
                 next()
 
             } catch (e) {
-                await res.status(403).json({msg: "Não autorizado"})
+                await res.status(403).json({msg: e.message})
+            }
+        },
+        isAdmin: async function(req, res, next){
+            try {
+                if (req.session.level !== "admin") return res.status(403).json({msg: "Não autorizado"});
+                next()
+
+            } catch (e) {
+                await res.status(403).json({msg: e.message})
             }
         },
         get_user: async function(req) {

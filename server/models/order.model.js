@@ -10,18 +10,20 @@ class Order extends BaseModel
     shipment_date;
     delivery_date;
     payment_method;
-    order_items;
+    address;
 
-    constructor(){
+    constructor(obj){
         super();
-        this.id = null
-        this.user = new User();
-        this.order_date = new Date()
-        this.status = 'Pendente'
-        this.shipment_date = null;
-        this.delivery_date = null;
-        this.payment_method = 'Dinheiro';
-        this.order_items = [];
+        Object.keys(obj).forEach(key => {
+            if (Object.keys(this).indexOf(key) < 0) {
+                delete obj[key]
+            }
+        })
+        Object.assign(this, obj)
+        this.order_date = this.order_date || new Date()
+        this.status = this.status || 'Pendente'
+        this.payment_method = this.payment_method || 'Dinheiro';
+
     }
 
     shitment() {
@@ -36,27 +38,6 @@ class Order extends BaseModel
 
     payment() {
         this.status = "Pago";
-    }
-
-    add_item(item){
-        let item = new OrderItem().fromJSON(item)
-        this.order_items.push(item)
-    }
-
-    remove_item(item){
-        let found = this.order_items.find(e => {return e  == item})
-        if (found != undefined){
-            let index = this.order_items.indexOf(found);
-            this.order_items = this.order_items.splice(index,1);
-        }
-    }
-
-    validate_items() {
-        let items = [];
-        for (let i in this.order_items) {
-            items.push(new OrderItem().fromJSON(i))
-        }
-        this.order_items = items
     }
 
 

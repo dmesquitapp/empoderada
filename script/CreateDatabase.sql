@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Address (
 );
 
 CREATE TABLE IF NOT EXISTS Orders (
-    id int(10) primary key,
+    id int(10) auto_increment primary key,
     user varchar(200) not null,
     order_date datetime not null,
     status varchar(50) not null,  -- pending, approved, shipped, delivered
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Orders (
 );
 
 CREATE TABLE IF NOT EXISTS OrderItems (
-    item_id serial PRIMARY KEY,
+    item_id int(10) auto_increment PRIMARY KEY,
     order_id int NOT NULL,
     product_name varchar(255) NOT NULL,
     quantity int NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS OrderItems (
 );
 
 CREATE TABLE IF NOT EXISTS Products (
-    id int AUTO_INCREMENT PRIMARY KEY,
+    id int(10) AUTO_INCREMENT PRIMARY KEY,
     sku varchar(36) UNIQUE KEY,
     image_url text,
     name varchar(255) NOT NULL,

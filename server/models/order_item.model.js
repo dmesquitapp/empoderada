@@ -1,5 +1,5 @@
 const BaseModel = require('./BaseModel')
-class OrderItem
+class OrderItem extends BaseModel
 {
     item_id;
     order_id;
@@ -7,14 +7,17 @@ class OrderItem
     quantity;
     price;
 
-    constructor(){
+    constructor(obj){
         super();
-        this.item_id = null
-        this.order_id = null
-        this.product_name = null
-        this.quantity = 0
-        this.price = 0.0
+        Object.keys(obj).forEach(key => {
+            if (Object.keys(this).indexOf(key) < 0) {
+                delete obj[key]
+            }
+        })
+        Object.assign(this, obj)
     }
+
+
     
 
 
