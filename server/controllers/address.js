@@ -7,7 +7,7 @@ module.exports = function(app) {
     return {
         create: async function(req, res) {
             let address = new Address().fromJSON(req.body)
-            address.user = req.session.user
+            address.user = req.user
             db.query(`INSERT INTO ${schema} SET ?`, address, async function (err) {
                 if (err) res.status(409).json({message: err.sqlMessage})
                 await res.status(201).send(true)
@@ -15,7 +15,7 @@ module.exports = function(app) {
         },
         update: async function(req, res) {
             let address = new Address().fromJSON(req.body)
-            db.query(`UPDATE ${schema} SET ? WHERE user = ? and id = ?`, [address, req.session.user, Number(req.params.id)], async function (err) {
+            db.query(`UPDATE ${schema} SET ? WHERE user = ? and id = ?`, [address, req.user, Number(req.params.id)], async function (err) {
                 if (err) {
                     await res.status(409).json({message: err.sqlMessage})
                 } else{
@@ -24,7 +24,7 @@ module.exports = function(app) {
             });
         },
         list: async function(req, res) {
-            db.query(`SELECT * FROM ${schema} WHERE user = ? LIMIT 5;`, req.session.user, async function (err, result) {
+            db.query(`SELECT * FROM ${schema} WHERE user = ? LIMIT 5;`, req.user, async function (err, result) {
                 if (err) await res.status(409).json({message: err.sqlMessage})
 
                 let response = result.map(r => {
@@ -34,7 +34,7 @@ module.exports = function(app) {
             });
         },
         get: async function(req, res) {
-            db.query(`SELECT * FROM ${schema} WHERE id = ? and user = ? LIMIT 1`, [Number(req.params.id), req.session.user], async function (err, result) {
+            db.query(`SELECT * FROM ${schema} WHERE id = ? and user = ? LIMIT 1`, [Number(req.params.id), req.user], async function (err, result) {
                 if (err){
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
@@ -47,7 +47,7 @@ module.exports = function(app) {
             });
         },
         remove: async function(req, res) {
-            db.query(`DELETE FROM ${schema} WHERE id = ? and user = ?`, [Number(req.params.id), req.session.user], async function (err) {
+            db.query(`DELETE FROM ${schema} WHERE id = ? and user = ?`, [Number(req.params.id), req.user], async function (err) {
                 if (err){
                     await res.status(409).json({message: err.sqlMessage})
                 }else {

@@ -11,7 +11,7 @@ module.exports = function(app) {
     return {
         create: async function(req, res) {
             let order = new Order(req.body)
-            order.user = req.session.user
+            order.user = req.user
             const items = req.body.order_items.map(i => new OrderItem(i))
             let data = {
                 user: order.user,
@@ -36,11 +36,11 @@ module.exports = function(app) {
         },
         update: async function(req, res) {
             let order = new Order(req.body)
-            order.user = req.session.user
+            order.user = req.user
             let {order_items} = req.body
             const items = order_items.map(i => new OrderItem(i))
 
-            db.query(`UPDATE ${schema} SET ? WHERE id = ? and user = ?`, [order, Number(req.params.id), req.session.user], async function (err, result) {
+            db.query(`UPDATE ${schema} SET ? WHERE id = ? and user = ?`, [order, Number(req.params.id), req.user], async function (err, result) {
                 if (err) return res.status(409).json({message: err.sqlMessage})
                 db.query("SELECT MAX(id) as id FROM Orders;", async function(err, result){let id = result[0].id
                     data = items.map(i => {
@@ -61,7 +61,7 @@ module.exports = function(app) {
                 shipment_date: order.shipment_date,
                 status: order.status
             }
-            db.query(`UPDATE ${schema} SET ? WHERE id = ? and user = ?`, [data, Number(req.params.id), req.session.user], async function (err, result) {
+            db.query(`UPDATE ${schema} SET ? WHERE id = ? and user = ?`, [data, Number(req.params.id), req.user], async function (err, result) {
                 if (err) return res.status(409).json({message: err.sqlMessage})
                 return res.status(202).json({message: `Order shipment updated`})
             });
@@ -69,7 +69,7 @@ module.exports = function(app) {
         payment: async function(req, res) {
             let order = new Order(req.body)
             order.payment();
-            db.query(`UPDATE ${schema} SET status = ? WHERE id = ? and user = ?`, [order.status, Number(req.params.id), req.session.user], async function (err, result) {
+            db.query(`UPDATE ${schema} SET status = ? WHERE id = ? and user = ?`, [order.status, Number(req.params.id), req.user], async function (err, result) {
                 if (err) return res.status(409).json({message: err.sqlMessage})
                 return res.status(202).json({message: `Order shipment updated`})
             });
@@ -81,13 +81,13 @@ module.exports = function(app) {
                 delivery_date: order.delivery_date,
                 status: order.status
             }
-            db.query(`UPDATE ${schema} SET ? WHERE id = ? and user = ?`, [data, Number(req.params.id), req.session.user], async function (err, result) {
+            db.query(`UPDATE ${schema} SET ? WHERE id = ? and user = ?`, [data, Number(req.params.id), req.user], async function (err, result) {
                 if (err) return res.status(409).json({message: err.sqlMessage})
                 return res.status(202).json({message: `Order delivery updated`})
             });
         },
         list: async function(req, res) {
-            const user = req.session.level == "admin" ? "" : req.session.user;
+            const user = req.level == "admin" ? "" : req.user;
             db.query(`SELECT * FROM ${schema} as p LEFT JOIN OrderItems ON p.id = order_id WHERE p.user LIKE '%${user}%';`, async function (err, result){
                 if (err) return res.status(409).json({message: err.sqlMessage});
                 let all_orders = []
@@ -108,7 +108,7 @@ module.exports = function(app) {
         },
         get: async function(req, res) {
             let sql = `SELECT * FROM ${schema} as p LEFT JOIN OrderItems ON p.id = order_id WHERE p.id = ? and email = ?`;
-            db.query(sql, [Number(req.params.id), req.session.user], async function (err, result) {
+            db.query(sql, [Number(req.params.id), req.user], async function (err, result) {
                 if (err) return res.status(409).json({message: err.sqlMessage})
             });
         },

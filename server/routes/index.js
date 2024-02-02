@@ -1,5 +1,5 @@
-const session = require('express-session')
-const User = require("../models/user.model");
+
+
 module.exports = async function (app) {
     const middleware = app.security.middleware
     const user_ctrl = app.controllers.user;
@@ -8,19 +8,7 @@ module.exports = async function (app) {
     const order_ctrl = app.controllers.order;
     const prefix = "/api"
     const escapeHtml = require('escape-html')
-    const User = require('../models/user.model')
 
-
-    app.use(session({
-        secret: 'keyboard cat',
-        resave: false,
-        saveUninitialized: true
-    }))
-
-    app.use((err, req, res, next) => {
-        console.error(err.stack)
-        res.status(500).send('Something broke!')
-    })
 
     // Users routes
     app.route(`${prefix}/users`)
@@ -73,24 +61,17 @@ module.exports = async function (app) {
 
 
     // Products routes
-    app.route(`${prefix}/products`)
-        .post(middleware.isAuthenticated, middleware.isAdmin, async function(req, res){
-            await product_ctrl.create(req, res)
-        });
-    app.route(`${prefix}/products/:page/:size`)
-        .get(middleware.isAuthenticated, async function(req, res){
+    app.route(`${prefix}/products/:page?`)
+        .get(async function(req, res){
             await product_ctrl.list(req, res)
         });
-    app.route(`${prefix}/products/:id`)
-        .put(middleware.isAuthenticated, middleware.isAdmin, async function(req, res){
-            await product_ctrl.update(req, res)
-        })
-        .delete(middleware.isAuthenticated, middleware.isAdmin, async function(req, res){
-            await product_ctrl.remove(req, res)
-        });
+
+    app.get(`${prefix}/pages/products`,async function(req, res){
+        await product_ctrl.get_pages(req, res)
+    })
 
 //     Orders routes
-    app.route(`${prefix}/order`)
+    app.route(`${prefix}/orders`)
         .post(middleware.isAuthenticated, async function(req, res){
             await order_ctrl.create(req, res);
         })

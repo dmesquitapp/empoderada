@@ -9,12 +9,16 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/' , express.static('public'));
+app.use('/' , express.static('static'));
+app.use('/home' , express.static('static'));
 
-
+// app.use(session({
+//     secret: 'empoderada',
+//     resave: false,
+//     saveUninitialized: true
+// }))
 
 app.set('trust proxy', 1) // trust first proxy
-
 
 consign({cwd: 'server'})
     .include('database')

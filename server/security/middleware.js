@@ -14,8 +14,8 @@ module.exports = function (app) {
                 const token = req.headers['authorization'];
                 if (!token) await res.status(403).json({msg: "Não autorizado"});
                 let user = await jwt.verify(token, secret);
-                req.session.user = user._id
-                req.session.level = user.level
+                req.user = user._id
+                req.level = user.level
                 next()
 
             } catch (e) {
@@ -24,7 +24,7 @@ module.exports = function (app) {
         },
         isAdmin: async function(req, res, next){
             try {
-                if (req.session.level !== "admin") return res.status(403).json({msg: "Não autorizado"});
+                if (req.level !== "admin") return res.status(403).json({msg: "Não autorizado"});
                 next()
 
             } catch (e) {

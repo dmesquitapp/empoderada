@@ -28,13 +28,13 @@ module.exports = function(app) {
             const user = new User(req.body);
             let sql = `UPDATE ${schema}
                        SET ? WHERE email = ?`;
-            db.query(sql, [user, req.session.user], async function (err) {
+            db.query(sql, [user, req.user], async function (err) {
                 if (err) res.status(409).json({message: err.sqlMessage})
                 await res.status(202).send(true)
             });
         },
         list: async function(req, res) {
-            db.query(`SELECT name, email, created_date, is_active FROM ${schema}`, req.session.user, async function (err, result) {
+            db.query(`SELECT name, email, created_date, is_active FROM ${schema}`, req.user, async function (err, result) {
                 if (err){
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
@@ -46,7 +46,7 @@ module.exports = function(app) {
             });
         },
         get: async function(req, res) {
-            db.query(`SELECT name, email, created_date, is_active FROM ${schema} WHERE email = ?`, req.session.user, async function (err, result) {
+            db.query(`SELECT name, email, created_date, is_active FROM ${schema} WHERE email = ?`, req.user, async function (err, result) {
                 if (err){
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
@@ -59,7 +59,7 @@ module.exports = function(app) {
             });
         },
         remove: async function(req, res) {
-            db.query(`DELETE FROM ${schema} WHERE email = ?`, req.session.user, async function (err) {
+            db.query(`DELETE FROM ${schema} WHERE email = ?`, req.user, async function (err) {
                 if (err){
                     await res.status(409).json({message: err.sqlMessage})
                 }else {
