@@ -10,9 +10,9 @@ module.exports = function(app) {
 
     return {
         create: async function(req, res) {
-            let order = new Order(req.body)
+            let order = Order.fromJSON(req.body)
             order.user = req.user
-            const items = req.body.order_items.map(i => new OrderItem(i))
+            const items = req.body.order_items.map(i => OrderItem.fromJSON(i))
             let data = {
                 user: order.user,
                 order_date: order.order_date,

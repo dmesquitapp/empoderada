@@ -30,8 +30,7 @@ module.exports = function(app) {
                 if (err) return res.status(409).json({message: err.sqlMessage})
                 const quantity = result[0].quantity
                 const pages = Math.floor(quantity / 8)
-                // const total_pages = pages < (quantity / 8) ? pages + 1 : pages
-                const total_pages = 28
+                const total_pages = pages < (quantity / 8) ? pages + 1 : pages
                 let response = []
                 for (let i = 1; i <= total_pages; i++){
                     let end = i * 5 > total_pages ? total_pages : i * 5;
@@ -44,7 +43,7 @@ module.exports = function(app) {
         },
         list: async function(req, res) {
             let page_size = 8
-            let offset = (req.params.page || 1 - 1) * page_size
+            let offset = (Number(req.params.page) - 1) * page_size
             db.query(`SELECT * FROM ${schema} LIMIT ${page_size} OFFSET ${offset};`, async function (err, result) {
                 if (err) await res.status(409).json({message: err.sqlMessage})
 

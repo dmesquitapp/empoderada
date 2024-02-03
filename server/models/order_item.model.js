@@ -3,6 +3,7 @@ class OrderItem extends BaseModel
 {
     item_id;
     order_id;
+    product_sku;
     product_name;
     quantity;
     price;

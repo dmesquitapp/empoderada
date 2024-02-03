@@ -9,7 +9,7 @@ class Product extends BaseModel
     stock;
     price;
 
-    constructor(){
+    constructor(obj){
         super();
         Object.keys(obj).forEach(key => {
             if (Object.keys(this).indexOf(key) < 0) {

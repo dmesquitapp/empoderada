@@ -27,4 +27,8 @@ module.exports = async function (app) {
     app.get('/cadastro', function (req, res) {
         res.sendFile(path.join(__dirname, '../../static', 'cadastro.html'));
     })
+
+    app.get('/checkout', function (req, res) {
+        res.sendFile(path.join(__dirname, '../../static', 'checkout.html'));
+    })
 }

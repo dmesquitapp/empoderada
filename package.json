@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node app.js",
     "serve": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minify-login": "minify static/js/login.js > static/js/login.min.js",
+    "minify-cadastro": "minify static/js/cadastro.js > static/js/cadastro.min.js",
+    "minify-home": "minify static/js/home.js > static/js/home.min.js",
+    "build": "npm run minify-login && npm run minify-cadastro && npm run minify-home"
   },
   "repository": {
     "type": "git",
@@ -31,6 +35,7 @@
     "express-list-endpoints": "^6.0.0",
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
+    "minify": "^11.0.1",
     "moment": "^2.30.1",
     "mysql2": "^3.7.0"
   },
