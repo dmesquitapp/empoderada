@@ -1,6 +1,21 @@
 $(document).ready(async function(){
-    console.log("pronto")
-    const path = "/api"
+    const name = sessionStorage.getItem("name")
+    const prefix = "/api"
+    document.getElementById("btn-sair").addEventListener("click", async function (){
+        sessionStorage.clear()
+        location.href = "/";
+    })
+
+    if (name){
+        document.getElementById("navbarDropdown").innerText = name
+        document.getElementById("btn-sair").classList.remove("d-none")
+        document.getElementById("btn-entrar").classList.add("d-none")
+        document.getElementById("btn-criar-conta").classList.add("d-none")
+    } else {
+        document.getElementById("btn-sair").classList.add("d-none")
+        document.getElementById("btn-entrar").classList.remove("d-none")
+        document.getElementById("btn-criar-conta").classList.remove("d-none")
+    }
 
 
     function getCookie(k) {
@@ -19,7 +34,7 @@ $(document).ready(async function(){
     }
 
     async function paginator(){
-        const response = await fetch(`${path}/pages/products`, {
+        const response = await fetch(`${prefix}/pages/products`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,6 +71,8 @@ $(document).ready(async function(){
             current_page.classList.add("text-white")
             current_page.classList.add("bg-dark")
 
+        } else {
+            location.href = "/?page=1"
         }
 
 

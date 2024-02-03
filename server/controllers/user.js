@@ -20,7 +20,9 @@ module.exports = function(app) {
             user.password = bcrypt.hashSync(user.password, salt);
             db.query(sql, [user.email, user.name, user.password], async function (err, result) {
                 if (err) res.status(409).json({message: err.sqlMessage})
-                await res.status(202).send(true)
+                const {name, email, level} = user
+                let token = await middleware.generate_token({name, email, level})
+                await res.status(202).json(Object.assign({}, {name, email, level}, {token}))
             });
 
         },
@@ -79,7 +81,8 @@ module.exports = function(app) {
                     if (valid) {
                         let authenticatedUser = new User(results[0])
                         let token = await middleware.generate_token(authenticatedUser)
-                        return res.status(202).json({token: token})
+                        authenticatedUser.token = token;
+                        return res.status(202).json(Object.assign({}, authenticatedUser, {token: token}))
                     } else {
                         return res.status(403).send("Não autorizado");
                     }
