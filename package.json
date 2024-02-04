@@ -10,7 +10,8 @@
     "minify-login": "minify static/js/login.js > static/js/login.min.js",
     "minify-cadastro": "minify static/js/cadastro.js > static/js/cadastro.min.js",
     "minify-home": "minify static/js/home.js > static/js/home.min.js",
-    "build": "npm run minify-login && npm run minify-cadastro && npm run minify-home"
+    "minify-checkout": "minify static/js/checkout.js > static/js/checkout.min.js",
+    "build": "npm run minify-login && npm run minify-cadastro && npm run minify-home && npm run minify-checkout"
   },
   "repository": {
     "type": "git",

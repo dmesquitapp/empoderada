@@ -27,8 +27,9 @@ module.exports = function(app) {
                         i.order_id = result[0].id
                         return i
                     })
-                    db.query(`INSERT INTO OrderItems SET ?;`, data, async function (err, result){
+                    db.query(`INSERT INTO OrderItems (order_id, product_sku, product_name, quantity, price) VALUES ?;`, [data.map(item => [item.order_id, item.product_sku, item.product_name, item.quantity, item.price])], async function (err, result){
                         if (err) return res.status(409).json({message: err.sqlMessage})
+                        console.info(`Order created with ${result.affectedRows} items`)
                         return res.status(201).json({message: `Order created with ${result.affectedRows} items`})
                     })
                 })

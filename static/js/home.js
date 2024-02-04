@@ -6,8 +6,6 @@ $(document).ready(async function(){
         location.href = "/";
     })
 
-    console.log(sessionStorage.getItem("cart"))
-
     const cart = JSON.parse(sessionStorage.getItem("cart") || "[]")
     if (!sessionStorage.getItem("cart")) {
         sessionStorage.setItem('cart', "[]")
@@ -131,9 +129,7 @@ $(document).ready(async function(){
                 list_products.appendChild(column)
             })
 
-
         }
     }
-
 
 })

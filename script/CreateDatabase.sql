@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS Orders (
     status varchar(50) not null,  -- pending, approved, shipped, delivered
     shipment_date datetime,       -- when the product was sent to customer
     delivery_date datetime,        -- when the product was delivered to customer
-    payment_method varchar(100) not null, --  credit card, cash on hand, pix, etc.
-    address varchar(200),
+    payment_method varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci not null, --  credit card, cash on hand, pix, etc.
+    address varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     FOREIGN KEY (user) REFERENCES Users(email)
 );
 
