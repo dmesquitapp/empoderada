@@ -8,7 +8,22 @@
 npm install
 ```
 
-### Executar aplicação
+### Build Database
 ```sh 
-npm start
+docker build -t empoderada-database:latest .
+```
+
+### Run Database
+```sh 
+docker run --name empoderada_db -p 3306:3306 -d empoderada-database:latest 
+```
+
+### Minify arquivos javascript
+```sh 
+npm run build
+```
+
+### Executar aplicação em desenvolvimento
+```sh 
+npm run serve
 ```
